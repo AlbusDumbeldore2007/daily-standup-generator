@@ -72,7 +72,7 @@ ${blockers ? `Mentioned blockers: ${blockers}` : ""}`;
         body: JSON.stringify({
           model: model,
           messages: [{ role: "user", content: prompt }],
-          max_tokens: 600,
+          max_tokens: 1200,
           temperature: 0.3,
         }),
       });
