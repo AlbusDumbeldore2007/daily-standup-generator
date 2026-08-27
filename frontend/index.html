@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Standup Generator — Write your standup in seconds</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">⚡ Standup Generator</div>
+      <p class="tagline">Paste what you did. Get a clean standup in 3 seconds.</p>
+    </header>
+
+    <main>
+      <div class="card input-card">
+        <div class="form-group">
+          <label for="rawNotes">
+            What did you work on today?
+            <span class="hint">Paste commit messages, task notes, or just brain-dump it</span>
+          </label>
+          <textarea
+            id="rawNotes"
+            placeholder="e.g.
+- fixed the login bug where tokens expire too fast
+- reviewed PRs from Ananya and left comments
+- started working on the dashboard pagination
+- had a call with design about the new onboarding flow"
+            rows="8"
+            maxlength="3000"
+          ></textarea>
+          <div class="char-count"><span id="charCount">0</span> / 3000</div>
+        </div>
+
+        <div class="form-group">
+          <label for="blockers">
+            Any blockers? <span class="optional">(optional)</span>
+          </label>
+          <input
+            type="text"
+            id="blockers"
+            placeholder="e.g. Waiting for API keys from the infra team"
+            maxlength="300"
+          />
+        </div>
+
+        <button id="generateBtn" class="btn-primary" onclick="generateStandup()">
+          <span id="btnText">Generate Standup ⚡</span>
+          <span id="btnLoader" class="loader hidden"></span>
+        </button>
+      </div>
+
+      <div id="outputSection" class="card output-card hidden">
+        <div class="output-header">
+          <h2>Your Standup</h2>
+          <button class="btn-copy" onclick="copyStandup()" id="copyBtn">📋 Copy</button>
+        </div>
+        <pre id="standupOutput"></pre>
+        <div id="copyConfirm" class="copy-confirm hidden">✅ Copied to clipboard!</div>
+      </div>
+
+      <div id="errorSection" class="error-card hidden">
+        <span id="errorMessage"></span>
+      </div>
+    </main>
+
+    <footer>
+      <p>Built by Pawan · <a href="https://github.com/AlbusDumbeldore2007/standup-generator" target="_blank">View on GitHub</a></p>
+      <p class="footer-note">AI runs on the backend only · No data stored · Free to use</p>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
