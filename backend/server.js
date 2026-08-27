@@ -48,29 +48,52 @@ ${rawInput}
 
 ${blockers ? `Mentioned blockers: ${blockers}` : ""}`;
 
-  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-      "Content-Type": "application/json",
-      "HTTP-Referer": "https://standup-generator.onrender.com",
-      "X-Title": "Standup Generator",
-    },
-    body: JSON.stringify({
-      model: "openai/gpt-4o-mini",
-      messages: [{ role: "user", content: prompt }],
-      max_tokens: 300,
-      temperature: 0.4,
-    }),
-  });
+  // Candidate models (tries free models first, falls back smoothly)
+  const models = [
+    "liquid/lfm-2.5-2.6b:free",
+    "nvidia/nemotron-3.5-lightning:free",
+    "cohere/north-mini-code:free",
+    "openai/gpt-4o-mini"
+  ];
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`AI API error ${response.status}: ${errorText}`);
+  let lastError = null;
+
+  for (const model of models) {
+    try {
+      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+          "Content-Type": "application/json",
+          "HTTP-Referer": "https://standup-generator-y2me.onrender.com",
+          "X-Title": "Standup Generator",
+        },
+        body: JSON.stringify({
+          model: model,
+          messages: [{ role: "user", content: prompt }],
+          max_tokens: 350,
+          temperature: 0.4,
+        }),
+      });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        console.warn(`Model ${model} failed (${response.status}): ${errText}`);
+        lastError = new Error(`AI API error ${response.status}: ${errText}`);
+        continue;
+      }
+
+      const data = await response.json();
+      if (data.choices && data.choices[0] && data.choices[0].message) {
+        return data.choices[0].message.content.trim();
+      }
+    } catch (err) {
+      console.warn(`Model ${model} threw error:`, err.message);
+      lastError = err;
+    }
   }
 
-  const data = await response.json();
-  return data.choices[0].message.content.trim();
+  throw lastError || new Error("Failed to generate standup with available models.");
 }
 
 // POST /generate-standup
