@@ -1,6 +1,6 @@
 // Backend URL — points to the Render deployment in production.
 // Never an AI API URL. Never an API key.
-const BACKEND_URL = "https://standup-generator-backend.onrender.com";
+const BACKEND_URL = "https://standup-generator-y2me.onrender.com";
 
 // ── Character counter ──────────────────────────────────────────────────────
 const rawNotesEl = document.getElementById("rawNotes");

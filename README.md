@@ -45,8 +45,8 @@ Monthly total: 200 × $0.000255 = $0.051  (~$0.05/month)
 
 ## Live Deployment
 
-**Frontend:** https://albusdumbeldore2007.github.io/standup-generator  
-**Backend:** https://standup-generator-backend.onrender.com
+**Frontend:** https://albusdumbeldore2007.github.io/standup-generator/  
+**Backend:** https://standup-generator-y2me.onrender.com
 
 ## Local Development
 
