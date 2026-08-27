@@ -39,9 +39,10 @@ Given the developer's raw notes about their day, produce a professional 3-sectio
 [List any blockers, or write "None" if there are no blockers]
 
 Rules:
-- Each section is 1–2 sentences maximum
+- Start immediately with "✅ Done:"
+- Do NOT include any reasoning, thoughts, preambles, or explanations
+- Each section must be 1–2 sentences maximum
 - Use professional engineering language
-- Do not add any extra commentary or headers outside the format above
 
 Developer's raw notes:
 ${rawInput}
@@ -71,8 +72,8 @@ ${blockers ? `Mentioned blockers: ${blockers}` : ""}`;
         body: JSON.stringify({
           model: model,
           messages: [{ role: "user", content: prompt }],
-          max_tokens: 350,
-          temperature: 0.4,
+          max_tokens: 600,
+          temperature: 0.3,
         }),
       });
 
@@ -85,7 +86,13 @@ ${blockers ? `Mentioned blockers: ${blockers}` : ""}`;
 
       const data = await response.json();
       if (data.choices && data.choices[0] && data.choices[0].message) {
-        return data.choices[0].message.content.trim();
+        let content = data.choices[0].message.content.trim();
+        // If the model included a thinking block, strip it to start at "✅ Done:" or "Done:"
+        const doneIndex = content.search(/(\u2705\s*)?Done:/i);
+        if (doneIndex > 0) {
+          content = content.slice(doneIndex).trim();
+        }
+        return content;
       }
     } catch (err) {
       console.warn(`Model ${model} threw error:`, err.message);
